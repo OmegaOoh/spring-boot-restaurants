@@ -7,6 +7,7 @@ import java.util.UUID;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import ku.restaurant.dto.RestaurantRequest;
 import ku.restaurant.entity.Restaurant;
 import ku.restaurant.repository.RestaurantRepository;
 
@@ -37,7 +38,11 @@ public class RestaurantService {
     }
 
 
-    public Restaurant create(Restaurant restaurant) {
+    public Restaurant create(RestaurantRequest request) {
+        Restaurant restaurant = new Restaurant();
+        restaurant.setName(request.getName());
+        restaurant.setRating(request.getRating());
+        restaurant.setLocation(request.getLocation());
         restaurant.setCreatedAt( Instant.now() );
         Restaurant record = repository.save(restaurant);
         return record; 
@@ -48,9 +53,7 @@ public class RestaurantService {
        Restaurant record = repository.findById(id).get();
        record.setName(requestBody.getName());
        record.setRating(requestBody.getRating());
-       record.setLocation(requestBody.getLocation());
-    
-    
+       record.setLocation(requestBody.getLocation());    
        record = repository.save(record);
        return record;
     }
