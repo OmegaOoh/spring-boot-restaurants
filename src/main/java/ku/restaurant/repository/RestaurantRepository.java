@@ -11,6 +11,6 @@ import ku.restaurant.entity.Restaurant;
 
 @Repository
 public interface RestaurantRepository extends JpaRepository<Restaurant, UUID> {
-    Restaurant findByName(String name);
+    List<Restaurant> findByName(String name);
     List<Restaurant> findByLocation(String location);
 }

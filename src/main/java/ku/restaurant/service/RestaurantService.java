@@ -28,7 +28,7 @@ public class RestaurantService {
         return repository.findById(id).get();
     }
     
-    public Restaurant getRestaurantByName(String name) {
+    public List<Restaurant> getRestaurantByName(String name) {
        return repository.findByName(name);
     }
  
