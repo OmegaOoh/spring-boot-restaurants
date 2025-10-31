@@ -1,6 +1,8 @@
 package ku.restaurant.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -32,23 +34,27 @@ public class AuthenticationController {
     }
     
     @PostMapping("/login")
-    public String authenticateUser(@Valid @RequestBody LoginRequest request) {
+    public ResponseEntity<String> authenticateUser(@Valid @RequestBody LoginRequest request) {
+ 
+ 
         Authentication authentication = authenticationManager.authenticate(
-            new UsernamePasswordAuthenticationToken(
-                request.getUsername(),
-                request.getPassword()
-            )
+                new UsernamePasswordAuthenticationToken(
+                        request.getUsername(),
+                        request.getPassword()
+                )
         );
-        UserDetails userDetails = (UserDetails) authentication.getPrincipal();
-        return jwtUtils.generateToken(userDetails.getUsername());
+        UserDetails userDetails =
+                (UserDetails) authentication.getPrincipal();
+        return ResponseEntity.ok(jwtUtils.generateToken(userDetails.getUsername()));
     }
-    
+ 
+ 
     @PostMapping("/signup")
-    public String resgisterUser(@Valid @RequestBody SignUpRequest request) {
-        if (userService.userExists(request.getUsername())) 
-            return "Error: Username is already taken";
-        
+    public ResponseEntity<String> registerUser(@Valid @RequestBody SignUpRequest request) {
+        if (userService.userExists(request.getUsername()))
+            return new ResponseEntity<>("Error: Username is already taken!", HttpStatus.BAD_REQUEST);
         userService.createUser(request);
-        return "User registered successfully!S";
+        return ResponseEntity.ok("User registered successfully!");
     }
+
 }

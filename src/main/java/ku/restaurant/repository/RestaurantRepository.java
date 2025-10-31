@@ -1,6 +1,7 @@
 package ku.restaurant.repository;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -11,6 +12,7 @@ import ku.restaurant.entity.Restaurant;
 
 @Repository
 public interface RestaurantRepository extends JpaRepository<Restaurant, UUID> {
-    List<Restaurant> findByName(String name);
+    boolean existsByName(String name);
+    Optional<Restaurant> findByName(String name);
     List<Restaurant> findByLocation(String location);
 }
