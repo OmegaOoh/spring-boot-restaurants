@@ -20,6 +20,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.service.annotation.DeleteExchange;
 
+import jakarta.validation.Valid;
+
 @RestController
 @RequestMapping("/api")
 public class RestaurantController {
@@ -47,7 +49,7 @@ public class RestaurantController {
     }
 
     @PostMapping("/restaurants")
-    public Restaurant create(@RequestBody RestaurantRequest restaurant) {
+    public Restaurant create(@Valid @RequestBody RestaurantRequest restaurant) {
         return service.create(restaurant);
     }
 

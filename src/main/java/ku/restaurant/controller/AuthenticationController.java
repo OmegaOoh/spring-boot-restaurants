@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import jakarta.validation.Valid;
 import ku.restaurant.dto.LoginRequest;
 import ku.restaurant.dto.SignUpRequest;
 import ku.restaurant.service.JwtUtils;
@@ -31,7 +32,7 @@ public class AuthenticationController {
     }
     
     @PostMapping("/login")
-    public String authenticateUser(@RequestBody LoginRequest request) {
+    public String authenticateUser(@Valid @RequestBody LoginRequest request) {
         Authentication authentication = authenticationManager.authenticate(
             new UsernamePasswordAuthenticationToken(
                 request.getUsername(),
@@ -43,7 +44,7 @@ public class AuthenticationController {
     }
     
     @PostMapping("/signup")
-    public String resgisterUser(@RequestBody SignUpRequest request) {
+    public String resgisterUser(@Valid @RequestBody SignUpRequest request) {
         if (userService.userExists(request.getUsername())) 
             return "Error: Username is already taken";
         
