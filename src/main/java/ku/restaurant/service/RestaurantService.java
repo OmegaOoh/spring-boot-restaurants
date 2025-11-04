@@ -1,18 +1,19 @@
 package ku.restaurant.service;
 
-import jakarta.persistence.EntityExistsException;
-import jakarta.persistence.EntityNotFoundException;
 import java.time.Instant;
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
-import ku.restaurant.dto.RestaurantRequest;
-import ku.restaurant.entity.Restaurant;
-import ku.restaurant.repository.RestaurantRepository;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
+
+import jakarta.persistence.EntityExistsException;
+import jakarta.persistence.EntityNotFoundException;
+import ku.restaurant.dto.RestaurantRequest;
+import ku.restaurant.entity.Restaurant;
+import ku.restaurant.repository.RestaurantRepository;
 
 @Service
 public class RestaurantService {

@@ -1,7 +1,6 @@
 package ku.restaurant.controller;
 
-import jakarta.persistence.EntityExistsException;
-import jakarta.persistence.EntityNotFoundException;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -12,6 +11,13 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+
+import io.jsonwebtoken.ExpiredJwtException;
+import io.jsonwebtoken.MalformedJwtException;
+import io.jsonwebtoken.UnsupportedJwtException;
+import jakarta.persistence.EntityExistsException;
+import jakarta.persistence.EntityNotFoundException;
+import jakarta.servlet.ServletException;
 
 @ControllerAdvice
 public class GlobalExceptionHandler {
@@ -46,4 +52,62 @@ public class GlobalExceptionHandler {
     ) {
         return new ResponseEntity<>(ex.getMessage(), HttpStatus.BAD_REQUEST);
     }
+    
+    @ExceptionHandler(SecurityException.class)
+    public ResponseEntity<?> handleSecurityExceptions(
+        SecurityException ex
+    ) {
+        logger.error("Security error", ex.getMessage());
+        return new ResponseEntity<>("Security error", HttpStatus.FORBIDDEN);
+    }
+    
+    @ExceptionHandler(MalformedJwtException.class)
+    public ResponseEntity<?> handleMalformedJwtException(
+        MalformedJwtException ex
+    ) {
+        logger.error("Malformed JWT Token", ex.getMessage());
+        return new ResponseEntity<>("Invalid JWT Token", HttpStatus.UNAUTHORIZED);
+    }
+    
+    @ExceptionHandler(ExpiredJwtException.class)
+    public ResponseEntity<?> handleExpiredJwtException(
+        ExpiredJwtException ex
+    ) {
+        logger.error("Expired JWT Token", ex.getMessage());
+        return new ResponseEntity<>("Expired JWT Token", HttpStatus.UNAUTHORIZED);
+    }
+    
+    @ExceptionHandler(UnsupportedJwtException.class)
+    public ResponseEntity<?> handleUnsupportedJwtException(
+        UnsupportedJwtException ex
+    ) {
+        logger.error("Unsupported JWT Token", ex.getMessage());
+        return new ResponseEntity<>("Invalid JWT Token", HttpStatus.UNAUTHORIZED);
+    }
+    
+    @ExceptionHandler(IllegalArgumentException.class)
+    public ResponseEntity<?> handleIllegalArgumentException(
+        IllegalArgumentException ex
+    ) {
+        logger.error(ex.getMessage());
+        return new ResponseEntity<>(ex.getMessage(), HttpStatus.BAD_REQUEST);
+    }
+    
+    @ExceptionHandler(ServletException.class)
+    public ResponseEntity<?> handleServletException(
+        ServletException ex
+    ) {
+        logger.error("Servlet Exception", ex.getMessage());
+        return new ResponseEntity<>(ex.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+    
+    @ExceptionHandler(IOException.class)
+    public ResponseEntity<?> handleIOException(
+        IOException ex
+    ) {
+        logger.error("IO Exception", ex.getMessage());
+        return new ResponseEntity<>(ex.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+    
+    
 }

@@ -17,12 +17,8 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @Configuration
 public class SecurityConfig {
 
-    private UnauthorizedEntryPointJwt unauthorizedHandler;
-
     @Autowired
-    public SecurityConfig(UnauthorizedEntryPointJwt unauthorizedHandler) {
-        this.unauthorizedHandler = unauthorizedHandler;
-    }
+    public SecurityConfig() {}
 
     @Bean
     public JwtAuthFilter authenticationJwtTokenFilter() {
@@ -49,9 +45,9 @@ public class SecurityConfig {
                 )
             )
             // Set unauthorized requests exception handler
-            .exceptionHandling(exceptionHandling ->
-                exceptionHandling.authenticationEntryPoint(unauthorizedHandler)
-            )
+            // .exceptionHandling(exceptionHandling ->
+            //     exceptionHandling.authenticationEntryPoint(unauthorizedHandler)
+            // )
             // Set permissions on endpoints
             .authorizeHttpRequests(authorizeRequests ->
                 authorizeRequests
@@ -60,11 +56,16 @@ public class SecurityConfig {
                     .permitAll()
                     // All other endpoints require authentication
                     // Role-based endpoints
-                    .requestMatchers(HttpMethod.GET, "/api/restaurants/**").hasAnyAuthority("ROLE_USER", "ROLE_ADMIN")
-                    .requestMatchers(HttpMethod.POST, "/api/restaurants").hasAnyAuthority("ROLE_ADMIN")
-                    .requestMatchers(HttpMethod.PUT, "/api/restaurants").hasAnyAuthority("ROLE_ADMIN")
-                    .requestMatchers(HttpMethod.DELETE, "/api/restaurants").hasAnyAuthority("ROLE_ADMIN")
-                    .requestMatchers("/admin/**").hasAuthority("ROLE_ADMIN")
+                    .requestMatchers(HttpMethod.GET, "/api/restaurants/**")
+                    .hasAnyAuthority("ROLE_USER", "ROLE_ADMIN")
+                    .requestMatchers(HttpMethod.POST, "/api/restaurants")
+                    .hasAnyAuthority("ROLE_ADMIN")
+                    .requestMatchers(HttpMethod.PUT, "/api/restaurants")
+                    .hasAnyAuthority("ROLE_ADMIN")
+                    .requestMatchers(HttpMethod.DELETE, "/api/restaurants")
+                    .hasAnyAuthority("ROLE_ADMIN")
+                    .requestMatchers("/admin/**")
+                    .hasAuthority("ROLE_ADMIN")
             );
 
         // Add the JWT Token filter

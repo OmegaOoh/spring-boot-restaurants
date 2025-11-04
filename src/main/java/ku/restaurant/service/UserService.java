@@ -8,6 +8,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import jakarta.persistence.EntityExistsException;
+
 @Service
 public class UserService {
 
@@ -24,7 +26,10 @@ public class UserService {
         return userRepository.existsByUsername(username);
     }
 
-    public void createUser(SignUpRequest request) {
+    public void createUser(SignUpRequest request) throws EntityExistsException {
+        if (userExists(request.getUsername())) {
+            throw new EntityExistsException("Username already exists");
+        }
         User dao = new User();
         dao.setUsername(request.getUsername());
         dao.setPassword(encoder.encode(request.getPassword()));

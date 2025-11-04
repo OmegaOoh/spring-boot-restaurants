@@ -33,7 +33,8 @@ public class AuthenticationEventListener {
    @EventListener
    public void onSuccess(AuthenticationSuccessEvent event) {
        User user = (User) event.getAuthentication().getPrincipal();
-       logger.info(user.getUsername() + " has successfully logged in at "
+       String role = user.getAuthorities().toString();
+       logger.info(user.getUsername() + role + " has successfully logged in at "
                + Instant.now());
    }
 
