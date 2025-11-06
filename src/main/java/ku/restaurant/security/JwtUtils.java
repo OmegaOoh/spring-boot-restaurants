@@ -1,4 +1,4 @@
-package ku.restaurant.service;
+package ku.restaurant.security;
 
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;

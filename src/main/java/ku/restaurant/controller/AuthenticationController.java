@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 import jakarta.validation.Valid;
 import ku.restaurant.dto.LoginRequest;
 import ku.restaurant.dto.SignUpRequest;
-import ku.restaurant.service.JwtUtils;
+import ku.restaurant.security.JwtUtils;
 import ku.restaurant.service.UserService;
 
 @RestController
