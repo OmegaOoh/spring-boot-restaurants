@@ -2,6 +2,7 @@ package ku.restaurant.security;
 
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
+import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
@@ -39,17 +40,21 @@ public class JwtAuthFilter extends OncePerRequestFilter {
         FilterChain filterChain
     ) throws ServletException, IOException {
         try {
-            String jwt = null;
-            // Get authorization header and validate
-            final String authHeader = request.getHeader(
-                HttpHeaders.AUTHORIZATION
-            );
-            if (authHeader != null && authHeader.startsWith("Bearer ")) jwt =
-                authHeader.substring(7);
+            Cookie[] cookies = request.getCookies();
+            String token = null;
+
+            if (cookies != null) {
+                for (Cookie cookie : cookies) {
+                    if ("token".equals(cookie.getName())) {
+                        token = cookie.getValue();
+                        break;
+                    }
+                }
+            }
 
             // Get jwt token and validate
-            if (jwt != null && jwtUtils.validateJwtToken(jwt)) {
-                String username = jwtUtils.getUsernameFromToken(jwt);
+            if (token != null && jwtUtils.validateJwtToken(token)) {
+                String username = jwtUtils.getUsernameFromToken(token);
                 UserDetails userDetails = userDetailsService.loadUserByUsername(
                     username
                 );

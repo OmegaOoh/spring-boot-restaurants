@@ -1,6 +1,10 @@
 package ku.restaurant.controller;
 
+import java.util.Map;
+
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -21,6 +25,8 @@ import ku.restaurant.service.UserService;
 @RequestMapping("/api/auth")
 public class AuthenticationController {
     
+    private static final String AUTH_COOKIE_NAME = "token";
+    
     private UserService userService;
     private AuthenticationManager authenticationManager;
     private JwtUtils jwtUtils;
@@ -33,7 +39,7 @@ public class AuthenticationController {
     }
     
     @PostMapping("/login")
-    public ResponseEntity<String> authenticateUser(@Valid @RequestBody LoginRequest request) {
+    public ResponseEntity<?> authenticateUser(@Valid @RequestBody LoginRequest request) {
  
  
         Authentication authentication = authenticationManager.authenticate(
@@ -44,7 +50,19 @@ public class AuthenticationController {
         );
         UserDetails userDetails =
                 (UserDetails) authentication.getPrincipal();
-        return ResponseEntity.ok(jwtUtils.generateToken(userDetails.getUsername()));
+                
+        String token = jwtUtils.generateToken(userDetails.getUsername());
+        
+        ResponseCookie cookie = ResponseCookie.from(AUTH_COOKIE_NAME, token)
+                .httpOnly(true)
+                .secure(true)
+                .path("/")
+                .maxAge(60 * 60)        // 1 hour
+                .build();
+        
+        return ResponseEntity.ok()
+            .header(HttpHeaders.SET_COOKIE, cookie.toString())
+            .body(Map.of("message", "Successfully logged in"));
     }
  
  
