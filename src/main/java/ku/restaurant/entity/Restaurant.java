@@ -12,12 +12,15 @@ import lombok.Data;
 @Data
 @Entity
 public class Restaurant {
+
     @Id
     @GeneratedValue
-    private UUID    id;
+    private UUID id;
+
     @Column(unique = true)
-    private String  name;
-    private double  rating;
-    private String  location;
+    private String name;
+
+    private double rating;
+    private String location;
     private Instant createdAt;
 }
