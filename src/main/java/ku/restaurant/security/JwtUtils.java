@@ -8,6 +8,8 @@ import io.jsonwebtoken.security.Keys;
 import jakarta.annotation.PostConstruct;
 import java.nio.charset.StandardCharsets;
 import java.util.Date;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import javax.crypto.SecretKey;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -23,6 +25,8 @@ public class JwtUtils {
 
     private SecretKey key;
 
+    private final Map<String, String> tokenStore = new ConcurrentHashMap<>();
+
     @PostConstruct
     public void init() {
         this.key = Keys.hmacShaKeyFor(
@@ -31,12 +35,14 @@ public class JwtUtils {
     }
 
     public String generateToken(String username) {
-        return Jwts.builder()
+        String token = Jwts.builder()
             .subject(username)
             .issuedAt(new Date())
             .expiration(new Date(System.currentTimeMillis() + jwtExpirationMs))
             .signWith(key, Jwts.SIG.HS256)
             .compact();
+        tokenStore.put(token, username);
+        return token;
     }
 
     public String getUsernameFromToken(String token) {
@@ -52,5 +58,9 @@ public class JwtUtils {
         throws SecurityException, MalformedJwtException, ExpiredJwtException, UnsupportedJwtException, IllegalArgumentException {
         Jwts.parser().verifyWith(key).build().parseSignedClaims(token);
         return true;
+    }
+
+    public void invalidateToken(String token) {
+        tokenStore.remove(token);
     }
 }
